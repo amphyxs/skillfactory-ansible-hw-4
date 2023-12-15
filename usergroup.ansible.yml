@@ -1,0 +1,28 @@
+---
+- name: Create superusers group
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Create superusers group
+      become: true
+      ansible.builtin.group:
+        name: superusers
+        state: present
+    - name: Add group to sudoers configuration
+      become: true
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        state: present
+        line: '%superusers  ALL=(ALL) ALL'
+    - name: Create user2 and him to superusers group
+      become: true
+      ansible.builtin.user:
+        name: user2
+        group: superusers
+        password: '{{ "user2" | password_hash("sha512") }}'
+    - name: Create user3 and him to superusers group
+      become: true
+      ansible.builtin.user:
+        name: user3
+        group: superusers
+        password: '{{ "user3" | password_hash("sha512") }}'
