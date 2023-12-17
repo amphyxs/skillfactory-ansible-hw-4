@@ -1,0 +1,5 @@
+---
+- name: Launch dnsmasq role
+  hosts: localhost
+  roles:
+    - dnsmasq

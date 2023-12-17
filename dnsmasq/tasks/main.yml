@@ -1,0 +1,41 @@
+---
+- name: Install dnsmasq
+  become: true
+  ansible.builtin.package:
+    name: dnsmasq
+    state: present
+- name: Configure dnsmasq domain
+  become: true
+  ansible.builtin.lineinfile:
+    path: '/etc/dnsmasq.conf'
+    regexp: domain=
+    line: domain=mydomain.com
+- name: Configure dnsmasq interface
+  become: true
+  ansible.builtin.lineinfile:
+    path: '/etc/dnsmasq.conf'
+    regexp: interface=
+    line: interface=eth1
+- name: Configure dnsmasq dhcp-range
+  become: true
+  ansible.builtin.lineinfile:
+    path: '/etc/dnsmasq.conf'
+    regexp: dhcp-range=
+    line: 'dhcp-range={{ dhcp_range }}'
+- name: Configure dnsmasq dhcp-host
+  become: true
+  ansible.builtin.lineinfile:
+    path: '/etc/dnsmasq.conf'
+    regexp: dhcp-host=
+    line: 'dhcp-host={{ dhcp_range }}'
+- name: Configure dnsmasq dhcp-option
+  become: true
+  ansible.builtin.lineinfile:
+    path: '/etc/dnsmasq.conf'
+    regexp: dhcp-option=
+    line: 'dhcp-option=1,255.255.255.0'
+- name: Restart dnsmasq
+  become: true
+  ansible.builtin.service:
+    name: dnsmasq
+    state: reloaded
