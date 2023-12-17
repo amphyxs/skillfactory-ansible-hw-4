@@ -56,7 +56,7 @@ http {
         listen       {{ nginx_port }};
         listen       [::]:{{ nginx_port }};
         server_name  example.site.com;
-        root         /var/www/html/site;
+        root         {{ document_root }};
 
         access_log /var/log/nginx/site-access.log;
         error_log  /var/log/nginx/site-error.log error;
