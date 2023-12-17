@@ -1,0 +1,47 @@
+---
+- name: Install php-fpm
+  become: true
+  ansible.builtin.package:
+    name: 'php-fpm'
+    state: present
+- name: Ensure /etc/php/{{ php_fpm_version }}/fpm/pool.d/ dir exists
+  file:
+    path: "/etc/php/{{ php_fpm_version }}/fpm/pool.d/"
+    state: directory
+- name: Load site config to php-fpm
+  become: true
+  ansible.builtin.template:
+    src: './templates/site.conf.j2'
+    mode: '0777'
+    dest: '/etc/php/{{ php_fpm_version }}/fpm/pool.d/site.conf'
+- name: Ensure /var/www/html/site/ dir exists
+  file:
+    path: "/var/www/html/site/"
+    state: directory
+- name: Copy PHP page
+  become: true
+  ansible.builtin.template:
+    src: './templates/index.php.j2'
+    mode: '0777'
+    dest: '/var/www/html/site/index.php'
+- name: Start php-fpm
+  become: true
+  ansible.builtin.service:
+    name: 'php-fpm'
+    state: started
+- name: Install nginx
+  become: true
+  ansible.builtin.package:
+    name: 'nginx'
+    state: present
+- name: Configure nginx
+  become: true
+  ansible.builtin.template:
+    src: './templates/nginx.conf.j2'
+    mode: '0777'
+    dest: '/etc/nginx/nginx.conf'
+- name: Start nginx
+  become: true
+  ansible.builtin.service:
+    name: 'nginx'
+    state: started
